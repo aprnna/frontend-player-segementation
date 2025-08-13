@@ -10,45 +10,62 @@ import { Form } from "@heroui/form";
 import { useRouter } from "next/navigation";
 
 export default function AboutPage() {
-  const [inputData, setInputData] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    if (!inputData) {
-      toast.error("Input cannot be empty");
-      return;
-    }
-    const steamIds = inputData.split(",");
-    console.log(steamIds);
     setLoading(true);
-    const data = {
-      steam_ids: steamIds,
-    };
-    const { data: dataUser } = await fetchApi(
-      "/analyze/full_steam_id",
-      "POST",
-      data
-    ).finally(() => setLoading(false));
-    if (dataUser.status == 400) return toast.error("Proses Gagal");
-    router.push(`/dashboard/${dataUser.data.proses_id}`);
-    return toast.success("Proses berhasil");
+    try {
+      const formData = new FormData(e.currentTarget);
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      console.log("Form data:", data);
+      const { data: dataUser } = await fetchApi(
+        "/analyze/full_steam_id",
+        "POST",
+        formData
+      );
+
+      if (dataUser.status === 400) {
+        toast.error(dataUser.message || "Proses Gagal");
+        return;
+      }
+      if (dataUser.status === "success") {
+        router.push(`/dashboard/${dataUser.data.proses_id}`);
+        toast.success("Proses berhasil");
+      } else {
+        toast.error("Proses Gagal");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Terjadi kesalahan saat memproses request");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="max-w-2xl mx-auto text-center">
       <h1 className={title()}>Welcome, {session?.user.data.name}</h1>
-      <Form
+      <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"
       >
         <Input
+          id="steam_ids"
+          name="steam_ids"
           label="Steam Id"
           labelPlacement="outside"
           placeholder="Masukkan List Steam id"
-          onChange={(e) => setInputData(e.target.value)}
+        />
+        <Input
+          name="file"
+          id="name"
+          type="file"
+          label="File"
+          labelPlacement="outside"
+          placeholder="Masukkan File List Steam"
         />
         <Button
           type="submit"
@@ -58,7 +75,7 @@ export default function AboutPage() {
         >
           Submit
         </Button>
-      </Form>
+      </form>
     </div>
   );
 }

@@ -1,0 +1,91 @@
+name: Validate And Push
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - run: npm install
+
+      - run: echo "VITE_BASEURL=https://inderasaepratama.co.id" > .env
+
+      - run: npm build
+
+      - run: tar -czf build.tar.gz .next
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build.tar.gz
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+
+      - name: Copy build to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "build.tar.gz"
+          target: "/home/adindaregita/frontend"
+
+      - name: Deploying to VPS
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd /home/adindaregita/frontend
+            rm -r .next
+            tar -xzf build.tar.gz
+            rm build.tar.gz
+
+  # sync-to-dev:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout master branch
+  #       uses: actions/checkout@v4
+
+  #     - name: Configure Git
+  #       run: |
+  #         git config user.name "github-actions[bot]"
+  #         git config user.email "github-actions[bot]@users.noreply.github.com"
+
+  #     - name: Fetch all branches
+  #       run: git fetch --unshallow
+
+  #     - name: Force push master to dev
+  #       run: |
+  #         git checkout master
+  #         git branch -f dev
+  #         git push origin dev --force
