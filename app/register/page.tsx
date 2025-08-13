@@ -26,45 +26,49 @@ export default function Page() {
     return toast.success("BERHASIL REGISTER");
   }
   return (
-    <div>
-      <h1 className={title()}>Register</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"
-      >
-        <Input
-          placeholder="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Input
-          placeholder="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button
-          className="mt-4"
-          color="primary"
-          type="submit"
-          isLoading={loading}
-        >
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-white to-blue-100 p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Register
-        </Button>
-        <p className="mt-2">
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            placeholder="Name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            variant="bordered"
+          />
+          <Input
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            variant="bordered"
+          />
+          <Input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="bordered"
+          />
+          <Button
+            className="w-full"
+            color="primary"
+            type="submit"
+            isLoading={loading}
+          >
+            Register
+          </Button>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link href="/login" className="text-primary">
+          <Link href="/" className="text-blue-500 hover:underline">
             Login here
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

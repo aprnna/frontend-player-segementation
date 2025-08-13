@@ -16,7 +16,7 @@ export const AuthOptions: NextAuthOptions = {
         const { email, password } = credentials as { email: string; password: string };
 
         const user = await fetchApi("/auth/login", "POST", { email, password });
-
+        console.log(user)
         if (user?.status_code !== 200) {
           throw new Error(user?.message ?? "Login failed");
         }
@@ -56,7 +56,7 @@ export const AuthOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/auth/login',
+    signIn: '/',
   },
   secret: process.env.NEXTAUTH_SECRET,
 
