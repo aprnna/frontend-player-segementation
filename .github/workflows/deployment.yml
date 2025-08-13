@@ -24,7 +24,7 @@ jobs:
 
       - run: echo "VITE_BASEURL=https://inderasaepratama.co.id" > .env
 
-      - run: npm build
+      - run: npm run build
 
       - run: tar -czf build.tar.gz .next
 
