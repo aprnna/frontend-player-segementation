@@ -10,7 +10,7 @@ export default function AboutLayout({
   return (
     <section className="flex items-center justify-center h-full">
       <Sidebar />
-      <div className="inline-block justify-center w-full container">
+      <div className="inline-block justify-center w-full container flex-1">
         {children}
       </div>
     </section>

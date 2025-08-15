@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           source: "build.tar.gz"
-          target: "/home/adindaregita/frontend"
+          target: "/home/adindaregita/frontend-player-segementation"
 
       - name: Deploying to VPS
         uses: appleboy/ssh-action@v0.1.4
@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /home/adindaregita/frontend
+            cd /home/adindaregita/frontend-player-segementation
             rm -r .next
             tar -xzf build.tar.gz
             rm build.tar.gz
