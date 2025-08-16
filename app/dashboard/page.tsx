@@ -8,12 +8,20 @@ import fetchApi from "@/utils/fetchApi";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { useRouter } from "next/navigation";
+import { useAnalysis } from "@/hooks/useAnalysis";
+import { AnalysisForm } from "@/components/AnalysisForm";
 
 export default function AboutPage() {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const [results, setResults] = useState<any>(null);
 
+  const handleAnalysisComplete = (result: any) => {
+    setResults(result);
+    console.log("Analysis completed with result:", result);
+    router.push(`/dashboard/${result.proses_id}`);
+  };
   async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
@@ -46,9 +54,11 @@ export default function AboutPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto text-center">
-      <h1 className={title()}>Welcome, {session?.user.data.name}</h1>
-      <form
+    <div className="max-w-2xl mx-auto text-center min-h-screen flex items-center justify-center flex-col">
+      {/* <h2 className="text-2xl font-bold mb-6">
+        Welcome, {session?.user.data.name}
+      </h2> */}
+      {/* <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"
       >
@@ -75,7 +85,10 @@ export default function AboutPage() {
         >
           Submit
         </Button>
-      </form>
+      </form> */}
+      <div className="w-full gap-4 py-8 md:py-10">
+        <AnalysisForm onComplete={handleAnalysisComplete} />
+      </div>
     </div>
   );
 }

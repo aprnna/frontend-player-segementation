@@ -8,9 +8,9 @@ export default function AboutLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex items-center justify-center h-full">
+    <section className="flex h-full">
       <Sidebar />
-      <div className="inline-block justify-center w-full container flex-1">
+      <div className="inline-block justify-start w-full container flex-1">
         {children}
       </div>
     </section>
