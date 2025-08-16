@@ -30,7 +30,7 @@ interface ItemSegmentasi {
 }
 
 interface ItemInterpretasi {
-  arketipe: string;
+  arketype: string;
   interpretasi: string;
   topik_dominan: string;
 }
@@ -88,6 +88,8 @@ export default function Page() {
     getData();
   }, []);
 
+  console.log(interpretasi);
+
   const columnsTopic = [
     {
       key: "Cluster",
@@ -128,7 +130,7 @@ export default function Page() {
 
   const columnsInterpretasi = [
     {
-      key: "arketipe",
+      key: "arketype",
       label: "Arketipe",
     },
     {
@@ -240,7 +242,7 @@ export default function Page() {
                 ) : (
                   <TableBody items={interpretasi}>
                     {(item: ItemInterpretasi) => (
-                      <TableRow key={item.arketipe}>
+                      <TableRow key={item.arketype}>
                         {(columnKey) => (
                           <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                         )}
@@ -249,6 +251,7 @@ export default function Page() {
                   </TableBody>
                 )}
               </Table>
+
               <h1 className="my-2 mt-10">Anggota Arketipe</h1>
               <Table aria-label="Membership">
                 <TableHeader columns={columnsMembership}>
